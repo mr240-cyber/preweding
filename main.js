@@ -71,12 +71,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   const navLinksContainer = document.querySelector('.nav-links');
 
   if (navLinksContainer) {
-    // Default Menus if not exists in localStorage
-    if (!localStorage.getItem('appMenus')) {
+    if (true) { // Force update
       const defaultMenus = [
         { name: 'Beranda', link: '/' },
         { name: 'Portofolio', link: '/portfolio.html' },
-        { name: 'Booking', link: '/booking.html' },
         { name: 'Client Area', link: '/client-login.html' }
       ];
       localStorage.setItem('appMenus', JSON.stringify(defaultMenus));

@@ -8,11 +8,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (auth) {
     auth.onAuthStateChanged((user) => {
       if (user) {
-        // Automatically redirect to booking if logged in
-        // Optional: you can redirect to dashboard instead
+        // Automatically redirect to booking if logged in and not on booking page
         const urlParams = new URLSearchParams(window.location.search);
         const returnUrl = urlParams.get('returnUrl') || '/booking.html';
-        window.location.href = returnUrl;
+        if (!window.location.pathname.includes('booking.html')) {
+          window.location.href = returnUrl;
+        }
       }
     });
   }

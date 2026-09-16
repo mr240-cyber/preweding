@@ -125,9 +125,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Auth Guard for Booking page
         if (currentLocation === '/booking.html' || currentLocation.includes('booking.html')) {
+          const authContainer = document.getElementById('authContainer');
+          const bookingContainer = document.getElementById('bookingContainer');
+          
           if (!user) {
-            window.location.href = '/auth.html?returnUrl=/booking.html';
+            if (authContainer) authContainer.style.display = 'block';
+            if (bookingContainer) bookingContainer.style.display = 'none';
           } else {
+            if (authContainer) authContainer.style.display = 'none';
+            if (bookingContainer) bookingContainer.style.display = 'block';
+
             const emailInput = document.getElementById('email');
             const nameInput = document.getElementById('name');
             if (emailInput) {
@@ -138,6 +145,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               nameInput.value = user.displayName;
             }
           }
+        }
         }
       });
     }

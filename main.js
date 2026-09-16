@@ -74,8 +74,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (true) { // Force update
       const defaultMenus = [
         { name: 'Beranda', link: '/' },
-        { name: 'Portofolio', link: '/portfolio.html' },
-        { name: 'Client Area', link: '/client-login.html' }
+        { name: 'Portofolio', link: '/portfolio.html' }
       ];
       localStorage.setItem('appMenus', JSON.stringify(defaultMenus));
     }

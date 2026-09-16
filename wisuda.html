@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portofolio Wisuda - kesan.wisuda</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <nav>
+    <a href="/" class="logo">KESAN.WISUDA.</a>
+    <ul class="nav-links">
+      <li><a href="/">Beranda</a></li>
+      <li><a href="/wisuda.html" class="active">Portofolio Wisuda</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-header">
+    <h1 class="fade-up">Momen Kelulusan Dalam Lensa</h1>
+    <p class="fade-up" style="transition-delay: 0.2s; color: var(--text-light);">Kumpulan karya terbaik kami dari berbagai perayaan wisuda yang penuh kebanggaan.</p>
+  </div>
+
+  <section style="padding-top: 0;">
+    <div class="gallery-grid">
+      <!-- We use the generated images multiple times to fill the grid -->
+      <div class="gallery-item fade-up">
+        <img src="/assets/portfolio_1.png" alt="Graduation">
+        <div class="gallery-overlay"><span>Graduation Day</span></div>
+      </div>
+      <div class="gallery-item fade-up" style="transition-delay: 0.1s">
+        <img src="/assets/portfolio_2.png" alt="Campus">
+        <div class="gallery-overlay"><span>Campus Vibe</span></div>
+      </div>
+      <div class="gallery-item fade-up" style="transition-delay: 0.2s">
+        <img src="/assets/hero.png" alt="Toga">
+        <div class="gallery-overlay"><span>The Toga</span></div>
+      </div>
+      <div class="gallery-item fade-up" style="transition-delay: 0.3s">
+        <img src="/assets/portfolio_2.png" alt="Friends">
+        <div class="gallery-overlay"><span>Best Friends</span></div>
+      </div>
+      <div class="gallery-item fade-up" style="transition-delay: 0.4s">
+        <img src="/assets/hero.png" alt="Parents">
+        <div class="gallery-overlay"><span>Proud Parents</span></div>
+      </div>
+      <div class="gallery-item fade-up" style="transition-delay: 0.5s">
+        <img src="/assets/portfolio_1.png" alt="Diploma">
+        <div class="gallery-overlay"><span>The Diploma</span></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-content">
+      <h3>BER.KESAAN.</h3>
+      <p>Premium Prewedding Photography Studio</p>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 ber.kesaan Photography. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script type="module" src="./firebase-config.js"></script>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

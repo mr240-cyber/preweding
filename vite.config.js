@@ -11,7 +11,8 @@ export default defineConfig({
         portfolio: resolve(__dirname, 'portfolio.html'),
         clientLogin: resolve(__dirname, 'client-login.html'),
         clientGallery: resolve(__dirname, 'client-gallery.html'),
-        invoice: resolve(__dirname, 'invoice.html')
+        invoice: resolve(__dirname, 'invoice.html'),
+        wisuda: resolve(__dirname, 'wisuda.html')
       }
     }
   }

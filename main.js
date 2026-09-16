@@ -1,15 +1,15 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const db = window.db;
   const auth = window.auth;
-  
+
   async function syncDB(key) {
-    if(!db) return;
+    if (!db) return;
     try {
       const doc = await db.collection('settings').doc(key).get();
-      if(doc.exists) {
+      if (doc.exists) {
         localStorage.setItem(key, doc.data().data);
       }
-    } catch(e) {
+    } catch (e) {
       console.error("Firebase sync error:", e);
     }
   }
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   await syncDB('appContent');
   await syncDB('appPortfolio');
   await syncDB('validAccessCodes');
-  
+
   // Sync client photos specifically for the logged-in user
   const currentClientPhone = localStorage.getItem('currentClientPhone');
   if (currentClientPhone && db) {
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         rawMap[currentClientPhone] = rawDoc.data().photos;
         localStorage.setItem('clientRawPhotos', JSON.stringify(rawMap));
       }
-      
+
       // Sync Edited Photos
       let editedDoc = await db.collection('clientEditedPhotos').doc(currentClientPhone).get();
       if (editedDoc.exists) {
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Navigation Active State and Dynamic Menus
   const currentLocation = location.pathname;
   const navLinksContainer = document.querySelector('.nav-links');
-  
+
   if (navLinksContainer) {
     // Default Menus if not exists in localStorage
     if (!localStorage.getItem('appMenus')) {
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const a = document.createElement('a');
       a.href = menu.link;
       a.textContent = menu.name;
-      
+
       // Determine active state
       if (currentLocation === menu.link || (currentLocation === '/' && menu.link === '/index.html')) {
         a.classList.add('active');
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (currentLocation === '/booking.html' || currentLocation.includes('booking.html')) {
           const authContainer = document.getElementById('authContainer');
           const bookingContainer = document.getElementById('bookingContainer');
-          
+
           if (!user) {
             if (authContainer) authContainer.style.display = 'block';
             if (bookingContainer) bookingContainer.style.display = 'none';
@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       e.preventDefault();
       const btn = bookingForm.querySelector('button[type="submit"]');
       const originalText = btn.textContent;
-      
+
       btn.textContent = 'Memproses...';
       btn.disabled = true;
 
@@ -176,16 +176,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       // Simpan ke localStorage untuk ditampilkan di invoice
       localStorage.setItem('recentBooking', JSON.stringify(bookingData));
-      
+
       // Save directly to Firestore allBookings
-      if(db) {
+      if (db) {
         try {
           const docRef = await db.collection('settings').doc('allBookings').get();
           let bookings = [];
-          if(docRef.exists) bookings = JSON.parse(docRef.data().data);
+          if (docRef.exists) bookings = JSON.parse(docRef.data().data);
           bookings.push(bookingData);
           await db.collection('settings').doc('allBookings').set({ data: JSON.stringify(bookings) });
-        } catch(e) {
+        } catch (e) {
           console.error("Error saving booking to Firestore", e);
         }
       }
@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const galleryGrid = document.querySelector('.gallery-grid:not(#clientGalleryGrid)');
   if (galleryGrid) {
     const isHomePage = (currentLocation === '/' || currentLocation === '/index.html');
-    
+
     let appPortfolio = JSON.parse(localStorage.getItem('appPortfolio'));
     if (!appPortfolio) {
       appPortfolio = [
@@ -217,14 +217,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     galleryGrid.innerHTML = '';
-    
+
     // limit to 3 if homepage
     const itemsToRender = isHomePage ? appPortfolio.slice(0, 3) : appPortfolio;
 
     itemsToRender.forEach((photo, index) => {
       // Calculate a slight delay for fade-up animation
       const delay = (index % 3) * 0.2;
-      
+
       const div = document.createElement('div');
       div.className = 'gallery-item fade-up';
       div.style.transitionDelay = `${delay}s`;
@@ -272,9 +272,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     appPackages.forEach((pkg, index) => {
       const formattedPrice = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(pkg.price);
       const delay = index * 0.2;
-      
+
       const featuresHTML = pkg.features.map(f => `<li>${f}</li>`).join('');
-      
+
       const div = document.createElement('div');
       div.className = 'service-card fade-up';
       div.style.transitionDelay = `${delay}s`;
@@ -312,12 +312,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Inject into Hero (if exists)
   const heroTitle = document.querySelector('.hero-content h1');
   const heroSubtitle = document.querySelector('.hero-content p');
-  if(heroTitle) heroTitle.textContent = appContent.heroTitle;
-  if(heroSubtitle) heroSubtitle.textContent = appContent.heroSubtitle;
+  if (heroTitle) heroTitle.textContent = appContent.heroTitle;
+  if (heroSubtitle) heroSubtitle.textContent = appContent.heroSubtitle;
 
   // Inject into Features (if exists)
   const featureCards = document.querySelectorAll('.features-grid .feature-card');
-  if(featureCards.length >= 3) {
+  if (featureCards.length >= 3) {
     featureCards[0].querySelector('h3').textContent = appContent.feature1Title;
     featureCards[0].querySelector('p').textContent = appContent.feature1Desc;
     featureCards[1].querySelector('h3').textContent = appContent.feature2Title;
@@ -329,8 +329,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Inject into Footer
   const footerDesc = document.querySelector('footer .footer-content p:first-of-type');
   const footerCopy = document.querySelector('footer .footer-bottom p');
-  if(footerDesc) footerDesc.textContent = appContent.footerDesc;
-  if(footerCopy) footerCopy.innerHTML = appContent.footerCopyright;
+  if (footerDesc) footerDesc.textContent = appContent.footerDesc;
+  if (footerCopy) footerCopy.innerHTML = appContent.footerCopyright;
 
   // ========== MOBILE HAMBURGER MENU ==========
   const nav = document.querySelector('nav');
@@ -340,7 +340,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     hamburger.className = 'hamburger-menu';
     hamburger.innerHTML = '<span></span><span></span><span></span>';
     nav.insertBefore(hamburger, navLinks.nextSibling);
-    
+
     hamburger.addEventListener('click', () => {
       navLinks.classList.toggle('active');
       hamburger.classList.toggle('active');

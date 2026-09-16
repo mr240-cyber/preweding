@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Invoice - ber.kesaan</title>
+  <link rel="stylesheet" href="./style.css">
+  <style>
+    .invoice-wrapper {
+      max-width: 800px;
+      margin: 100px auto 40px;
+      padding: 3rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      color: var(--text-dark);
+    }
+    .invoice-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--primary-color);
+      padding-bottom: 2rem;
+      margin-bottom: 2rem;
+    }
+    .invoice-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 600;
+    }
+    .invoice-title {
+      font-size: 2.5rem;
+      color: var(--primary-color);
+      font-family: 'Playfair Display', serif;
+    }
+    .invoice-details {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 3rem;
+    }
+    .client-info h4 {
+      margin-bottom: 0.5rem;
+      color: var(--text-light);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .invoice-meta {
+      text-align: right;
+    }
+    .invoice-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 3rem;
+    }
+    .invoice-table th, .invoice-table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    .invoice-table th {
+      background: #f9f9f9;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+    .invoice-table .amount {
+      text-align: right;
+    }
+    .invoice-total {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 2rem;
+      font-size: 1.25rem;
+      font-weight: 600;
+      padding-top: 1rem;
+      border-top: 2px solid var(--primary-color);
+    }
+    .invoice-total .total-amount {
+      color: var(--primary-color);
+      font-size: 1.5rem;
+    }
+    .invoice-actions {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 3rem;
+    }
+    @media print {
+      body {
+        background: white;
+      }
+      nav, footer, .invoice-actions {
+        display: none !important;
+      }
+      .invoice-wrapper {
+        margin: 0;
+        box-shadow: none;
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="logo">BER.KESAAN.</a>
+    <ul class="nav-links">
+      <li><a href="/">Beranda</a></li>
+      <li><a href="/portfolio.html">Portofolio</a></li>
+      <li><a href="/booking.html">Booking</a></li>
+      <li><a href="/client-login.html">Client Area</a></li>
+    </ul>
+  </nav>
+
+  <div class="invoice-wrapper fade-up visible">
+    <div class="invoice-header">
+      <div class="invoice-brand">BER.KESAAN.</div>
+      <div class="invoice-title" id="inv-header-title">INVOICE</div>
+    </div>
+
+    <div class="invoice-details">
+      <div class="client-info">
+        <h4>Ditagihkan Kepada:</h4>
+        <h2 id="inv-name" style="font-family: 'Inter', sans-serif; font-size: 1.2rem; font-weight: 600; margin-bottom: 0.2rem;">Nama Klien</h2>
+        <p id="inv-email">email@contoh.com</p>
+        <p id="inv-phone">081234567890</p>
+      </div>
+      <div class="invoice-meta">
+        <p><strong>No. Invoice:</strong> <span id="inv-number">INV-20260001</span></p>
+        <p><strong>Tanggal Pemesanan:</strong> <span id="inv-booking-date">01/01/2026</span></p>
+        <p><strong>Tanggal Sesi:</strong> <span id="inv-session-date">01/02/2026</span></p>
+      </div>
+    </div>
+
+    <table class="invoice-table">
+      <thead>
+        <tr>
+          <th>Deskripsi Layanan</th>
+          <th>Lokasi</th>
+          <th class="amount">Harga Paket</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <strong id="inv-package-name">Paket Prewedding</strong>
+            <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 0.2rem;" id="inv-notes">Catatan tambahan...</p>
+          </td>
+          <td id="inv-loc">Studio</td>
+          <td class="amount" id="inv-price">Rp 0</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="invoice-total" style="font-size: 1rem; border-top: 1px solid #eee; padding-top: 1rem; margin-top: 1rem;" id="inv-dp-row">
+      <span>Uang Muka (DP 20%):</span>
+      <span style="color: var(--text-dark);" id="inv-dp-amount">Rp 0</span>
+    </div>
+    <div class="invoice-total">
+      <span id="inv-total-label">Total Tagihan:</span>
+      <span class="total-amount" id="inv-total">Rp 0</span>
+    </div>
+
+    <div id="inv-payment-note" style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-light); text-align: right; font-style: italic;">
+      *Sisa pelunasan (80%) dibayarkan pada saat Hari H pemotretan.
+    </div>
+
+    <div class="invoice-actions">
+      <button onclick="window.print()" class="btn">Cetak Invoice (PDF)</button>
+      <a href="/" class="btn btn-outline">Kembali ke Beranda</a>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <h3>BER.KESAAN.</h3>
+      <p>Premium Prewedding Photography Studio</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const data = localStorage.getItem('recentBooking');
+      if (data) {
+        const booking = JSON.parse(data);
+        
+        const packages = {
+          'basic': { name: 'Basic Package', price: 3500000 },
+          'premium': { name: 'Premium Package', price: 7000000 },
+          'cinematic': { name: 'Cinematic Package', price: 12000000 }
+        };
+
+        const selectedPkg = packages[booking.packageId] || { name: 'Paket Custom', price: 0 };
+        
+        document.getElementById('inv-name').textContent = booking.name;
+        document.getElementById('inv-email').textContent = booking.email;
+        document.getElementById('inv-phone').textContent = booking.phone;
+        
+        document.getElementById('inv-number').textContent = 'INV-' + Math.floor(Math.random() * 1000000);
+        document.getElementById('inv-booking-date').textContent = booking.bookingDate;
+        document.getElementById('inv-session-date').textContent = booking.date;
+        
+        document.getElementById('inv-package-name').textContent = selectedPkg.name;
+        document.getElementById('inv-notes').textContent = booking.message || 'Tidak ada catatan khusus.';
+        document.getElementById('inv-loc').textContent = booking.location || 'Sesuai kesepakatan';
+        
+        const formatRupiah = (number) => {
+          return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(number);
+        };
+        
+        const packagePrice = selectedPkg.price;
+        const dpAmount = packagePrice * 0.20; // 20% DP
+        const remainingAmount = packagePrice - dpAmount;
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const type = urlParams.get('type');
+
+        document.getElementById('inv-price').textContent = formatRupiah(packagePrice);
+        document.getElementById('inv-dp-amount').textContent = formatRupiah(dpAmount);
+
+        const headerTitle = document.getElementById('inv-header-title');
+        const totalLabel = document.getElementById('inv-total-label');
+        const totalAmount = document.getElementById('inv-total');
+        const dpRow = document.getElementById('inv-dp-row');
+        const paymentNote = document.getElementById('inv-payment-note');
+
+        if (type === 'dp') {
+          headerTitle.textContent = 'INVOICE DP (20%)';
+          totalLabel.textContent = 'Total Tagihan DP:';
+          totalAmount.textContent = formatRupiah(dpAmount);
+          paymentNote.textContent = '*Sisa pelunasan (80%) dibayarkan pada saat Hari H pemotretan.';
+        } else if (type === 'pelunasan') {
+          headerTitle.textContent = 'INVOICE PELUNASAN';
+          totalLabel.textContent = 'Sisa Pelunasan:';
+          totalAmount.textContent = formatRupiah(remainingAmount);
+          dpRow.innerHTML = `<span>DP (20%) Telah Dibayar:</span> <span style="color: green;">- ${formatRupiah(dpAmount)}</span>`;
+          paymentNote.textContent = '*Harap lakukan pelunasan ini pada saat Hari H pemotretan.';
+        } else {
+          // Normal invoice
+          totalLabel.textContent = 'Total:';
+          totalAmount.textContent = formatRupiah(packagePrice);
+          dpRow.style.display = 'none';
+          paymentNote.style.display = 'none';
+        }
+      } else {
+        alert('Data booking tidak ditemukan. Kembali ke halaman utama.');
+        window.location.href = '/';
+      }
+    });
+  </script>
+</body>
+</html>

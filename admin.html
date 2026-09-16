@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - ber.kesaan</title>
+  <link rel="stylesheet" href="./admin.css">
+</head>
+<body class="admin-mode">
+
+  <!-- Login Overlay -->
+  <div id="admin-login-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--admin-bg); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+    <div style="background: white; padding: 40px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 90%; max-width: 400px; text-align: center;">
+      <h2 style="margin-bottom: 20px; font-family: 'Playfair Display', serif;">ber.kesaan Admin</h2>
+      <p style="margin-bottom: 20px; color: #666; font-size: 0.9rem;">Silakan login untuk mengelola website.</p>
+      <form id="adminLoginForm">
+        <input type="email" id="adminEmail" class="form-control-admin" placeholder="Email" required style="margin-bottom: 15px;">
+        <input type="password" id="adminPassword" class="form-control-admin" placeholder="Password" required style="margin-bottom: 20px;">
+        <button type="submit" class="btn-admin" style="width: 100%;">Masuk</button>
+      </form>
+      <p id="loginError" style="color: #e74c3c; margin-top: 15px; display: none; font-size: 0.9rem;"></p>
+    </div>
+  </div>
+  
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar-header">
+      <span>ber.kesaan Admin</span>
+      <div id="admin-hamburger" class="admin-hamburger d-none-desktop">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <ul class="admin-nav">
+      <li><a href="#" class="nav-btn active" data-target="dashboard">Dashboard</a></li>
+      <li><a href="#" class="nav-btn" data-target="bookings">Kelola Klien & Booking</a></li>
+      <li><a href="#" class="nav-btn" data-target="packages">Kelola Harga Paket</a></li>
+      <li><a href="#" class="nav-btn" data-target="content">Kelola Konten Web</a></li>
+      <li><a href="#" class="nav-btn" data-target="menus">Kelola Menu Navigasi</a></li>
+      <li><a href="#" class="nav-btn" data-target="portfolio-admin">Kelola Portofolio</a></li>
+      <li><a href="#" onclick="logoutAdmin()" style="margin-top: 50px; border-top: 1px solid rgba(255,255,255,0.1); color: #e74c3c;">Logout (Keluar)</a></li>
+      <li><a href="/" target="_blank" style="color: #95a5a6;">Lihat Website &nearr;</a></li>
+    </ul>
+  </aside>
+
+  <main class="admin-content">
+    <div class="admin-header">
+      <h1 id="page-title">Dashboard Utama</h1>
+    </div>
+
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="admin-section">
+      <div class="admin-card">
+        <h2>Selamat Datang di Admin Panel</h2>
+        <p>Gunakan menu di samping untuk mengelola website Anda.</p>
+      </div>
+    </section>
+
+    <!-- Bookings Section -->
+    <section id="bookings" class="admin-section d-none">
+      <div class="admin-card">
+        <h2>Daftar Booking Terbaru</h2>
+        <p>Daftar klien yang telah mengisi form booking di website. Anda bisa membuatkan **Kode Akses** untuk mereka agar bisa melihat foto di Galeri Klien.</p>
+        <table class="admin-table" style="margin-top: 20px;">
+          <thead>
+            <tr>
+              <th>Nama Klien</th>
+              <th>Tanggal Sesi</th>
+              <th>Paket</th>
+              <th>Kode Akses (Galeri)</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="bookings-table-body">
+            <!-- Data will be loaded via JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Packages Section -->
+    <section id="packages" class="admin-section d-none">
+      <div class="admin-card">
+        <h2>Kelola Harga & Paket</h2>
+        <p>Atur paket layanan dan harga yang akan ditampilkan ke pelanggan.</p>
+        
+        <form id="addPackageForm" style="margin: 20px 0; padding: 20px; background: #f9f9f9; border-radius: 8px;">
+          <h4>Tambah / Edit Paket</h4>
+          <input type="hidden" id="pkgIndex" value="">
+          <div style="display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap;">
+            <div class="form-group-admin" style="flex: 1; min-width: 200px; margin: 0;">
+              <label>Nama Paket</label>
+              <input type="text" id="pkgName" class="form-control-admin" placeholder="Contoh: Basic Package" required>
+            </div>
+            <div class="form-group-admin" style="flex: 1; min-width: 200px; margin: 0;">
+              <label>Harga (Rp)</label>
+              <input type="number" id="pkgPrice" class="form-control-admin" placeholder="3500000" required>
+            </div>
+            <div class="form-group-admin" style="flex: 100%; margin: 0;">
+              <label>Fitur / Layanan (Pisahkan dengan koma)</label>
+              <input type="text" id="pkgFeatures" class="form-control-admin" placeholder="Sesi 4 Jam, 1 Lokasi, 50 Foto Edit" required>
+            </div>
+            <div style="flex: 100%;">
+              <button type="submit" class="btn-admin">Simpan Paket</button>
+            </div>
+          </div>
+        </form>
+
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Nama Paket</th>
+              <th>Harga</th>
+              <th>Fitur</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="packages-table-body">
+            <!-- Data loaded via JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Content CMS Section -->
+    <section id="content" class="admin-section d-none">
+      <div class="admin-card">
+        <h2>Kelola Konten Website</h2>
+        <p>Ubah teks utama yang muncul di berbagai halaman website Anda.</p>
+        
+        <form id="contentForm" style="margin-top: 20px;">
+          <!-- Hero Section -->
+          <h3 style="border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-top: 20px;">1. Bagian Sambutan (Beranda Utama)</h3>
+          <div class="form-group-admin">
+            <label>Judul Utama (Hero Title)</label>
+            <input type="text" id="cms-heroTitle" class="form-control-admin" required>
+          </div>
+          <div class="form-group-admin">
+            <label>Deskripsi Sambutan (Hero Subtitle)</label>
+            <textarea id="cms-heroSubtitle" class="form-control-admin" rows="3" required></textarea>
+          </div>
+
+          <!-- Features Section -->
+          <h3 style="border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-top: 40px;">2. Bagian Keunggulan Layanan</h3>
+          
+          <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 250px; background: #f9f9f9; padding: 15px; border-radius: 8px;">
+              <h4>Keunggulan 1</h4>
+              <div class="form-group-admin">
+                <label>Judul</label>
+                <input type="text" id="cms-feature1Title" class="form-control-admin" required>
+              </div>
+              <div class="form-group-admin">
+                <label>Deskripsi</label>
+                <textarea id="cms-feature1Desc" class="form-control-admin" rows="2" required></textarea>
+              </div>
+            </div>
+
+            <div style="flex: 1; min-width: 250px; background: #f9f9f9; padding: 15px; border-radius: 8px;">
+              <h4>Keunggulan 2</h4>
+              <div class="form-group-admin">
+                <label>Judul</label>
+                <input type="text" id="cms-feature2Title" class="form-control-admin" required>
+              </div>
+              <div class="form-group-admin">
+                <label>Deskripsi</label>
+                <textarea id="cms-feature2Desc" class="form-control-admin" rows="2" required></textarea>
+              </div>
+            </div>
+
+            <div style="flex: 1; min-width: 250px; background: #f9f9f9; padding: 15px; border-radius: 8px;">
+              <h4>Keunggulan 3</h4>
+              <div class="form-group-admin">
+                <label>Judul</label>
+                <input type="text" id="cms-feature3Title" class="form-control-admin" required>
+              </div>
+              <div class="form-group-admin">
+                <label>Deskripsi</label>
+                <textarea id="cms-feature3Desc" class="form-control-admin" rows="2" required></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer Section -->
+          <h3 style="border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-top: 40px;">3. Bagian Informasi Kaki (Footer)</h3>
+          <div class="form-group-admin">
+            <label>Deskripsi Singkat Studio</label>
+            <input type="text" id="cms-footerDesc" class="form-control-admin" required>
+          </div>
+          <div class="form-group-admin">
+            <label>Teks Hak Cipta (Copyright)</label>
+            <input type="text" id="cms-footerCopyright" class="form-control-admin" required>
+          </div>
+
+          <button type="submit" class="btn-admin" style="margin-top: 30px; font-size: 1.1rem; padding: 15px 30px;">Simpan Semua Perubahan Konten</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Menus Section -->
+    <section id="menus" class="admin-section d-none">
+      <div class="admin-card">
+        <h2>Kelola Menu Navigasi Website</h2>
+        <p>Anda bisa menambahkan menu kustom yang akan muncul di *navbar* semua halaman.</p>
+        
+        <form id="addMenuForm" style="margin: 20px 0; padding: 20px; background: #f9f9f9; border-radius: 8px;">
+          <h4>Tambah Menu Baru</h4>
+          <div style="display: flex; gap: 15px; margin-top: 15px; align-items: flex-end;">
+            <div class="form-group-admin" style="flex: 1; margin: 0;">
+              <label>Nama Menu (Teks)</label>
+              <input type="text" id="menuName" class="form-control-admin" placeholder="Contoh: Promo 2026" required>
+            </div>
+            <div class="form-group-admin" style="flex: 1; margin: 0;">
+              <label>Link / URL</label>
+              <input type="text" id="menuLink" class="form-control-admin" placeholder="Contoh: /promo.html" required>
+            </div>
+            <button type="submit" class="btn-admin">Tambah Menu</button>
+          </div>
+        </form>
+
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Nama Menu</th>
+              <th>URL</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="menus-table-body">
+            <!-- Data loaded via JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio-admin" class="admin-section d-none">
+      <div class="admin-card">
+        <h2>Kelola Foto Portofolio</h2>
+        <p>Tambahkan karya terbaik Anda ke dalam halaman portofolio utama.</p>
+        
+        <form id="addPortfolioForm" style="margin: 20px 0; padding: 20px; background: #f9f9f9; border-radius: 8px;">
+          <h4>Tambah Foto Baru</h4>
+          <div style="display: flex; gap: 15px; margin-top: 15px; align-items: flex-end;">
+            <div class="form-group-admin" style="flex: 1; margin: 0;">
+              <label>Judul Foto (Teks Overlay)</label>
+              <input type="text" id="portfolioTitle" class="form-control-admin" placeholder="Contoh: The Promise" required>
+            </div>
+            <div class="form-group-admin" style="flex: 1; margin: 0;">
+              <label>Pilih File Gambar</label>
+              <input type="file" id="portfolioFile" class="form-control-admin" accept="image/*" required>
+            </div>
+            <button type="submit" class="btn-admin" id="btnUploadPortfolio">Tambah Foto</button>
+          </div>
+        </form>
+
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Thumbnail</th>
+              <th>Judul</th>
+              <th>URL Gambar</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="portfolio-table-body">
+            <!-- Data loaded via JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Client Photo Upload Modal -->
+  <div id="uploadModal" class="d-none" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+    <div style="background: white; padding: 30px; border-radius: 8px; width: 600px; max-width: 90%; max-height: 90vh; overflow-y: auto;">
+      <h3 id="uploadModalTitle" style="margin-top: 0;">Kelola Foto Klien</h3>
+      <p style="color: #666; font-size: 0.9rem; margin-bottom: 20px;">Unggah foto mentah agar klien bisa memilih, atau foto hasil edit final.</p>
+      
+      <form id="clientPhotoForm">
+        <input type="hidden" id="uploadClientPhone">
+        
+        <div class="form-group-admin">
+          <label>Kategori Foto</label>
+          <select id="clientPhotoCategory" class="form-control-admin" required>
+            <option value="raw">Foto Mentah (Belum Edit)</option>
+            <option value="edited">Foto Hasil Edit (Final)</option>
+          </select>
+        </div>
+
+        <div class="form-group-admin">
+          <label>Pilih File Foto (Bisa pilih banyak)</label>
+          <input type="file" id="clientPhotoFile" class="form-control-admin" accept="image/*" multiple required>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+          <button type="submit" class="btn-admin" id="btnUploadClient">Upload Foto</button>
+          <button type="button" class="btn-admin danger" onclick="closeUploadModal()">Tutup</button>
+        </div>
+      </form>
+
+      <div style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+        <h4>Daftar Foto Klien:</h4>
+        
+        <h5 style="margin-top: 15px; margin-bottom: 5px; color: var(--admin-primary);">Foto Mentah</h5>
+        <div id="currentClientRawLink" style="font-size: 0.9rem; color: var(--admin-primary); display: flex; flex-wrap: wrap; gap: 10px; margin-top: 5px; margin-bottom: 15px;">
+          <!-- list of raw images -->
+        </div>
+
+        <h5 style="margin-bottom: 5px; color: var(--admin-primary);">Foto Hasil Edit</h5>
+        <div id="currentClientEditedLink" style="font-size: 0.9rem; color: var(--admin-primary); display: flex; flex-wrap: wrap; gap: 10px; margin-top: 5px;">
+          <!-- list of edited images -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Client Selections Modal -->
+  <div id="selectionsModal" class="d-none" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+    <div style="background: white; padding: 30px; border-radius: 8px; width: 800px; max-width: 90%; max-height: 90vh; overflow-y: auto;">
+      <h3 id="selectionsModalTitle" style="margin-top: 0;">Pilihan Foto Klien</h3>
+      <p style="color: #666; font-size: 0.9rem; margin-bottom: 20px;">Berikut adalah foto mentah yang telah dipilih klien beserta catatan/nama yang mereka berikan.</p>
+      
+      <div id="clientSelectionsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
+        <!-- Dynamic selections injected here -->
+      </div>
+
+      <div style="margin-top: 20px; text-align: right;">
+        <button type="button" class="btn-admin danger" onclick="closeSelectionsModal()">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script type="module" src="./firebase-config.js"></script>
+  <script type="module" src="./admin.js"></script>
+</body>
+</html>

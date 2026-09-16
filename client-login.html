@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Area - ber.kesaan</title>
+  <link rel="stylesheet" href="./style.css">
+  <style>
+    .login-container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: var(--bg-color);
+      padding: 4rem;
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+    .login-container p {
+      margin-bottom: 2rem;
+      color: var(--text-light);
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="logo">BER.KESAAN.</a>
+    <ul class="nav-links">
+      <li><a href="/">Beranda</a></li>
+      <li><a href="/portfolio.html">Portofolio</a></li>
+      <li><a href="/booking.html">Booking</a></li>
+      <li><a href="/client-login.html" class="active">Client Area</a></li>
+    </ul>
+    <a href="/booking.html" class="btn">Pesan Sekarang</a>
+  </nav>
+
+  <div class="page-header">
+    <h1 class="fade-up">Akses Galeri Pribadi</h1>
+  </div>
+
+  <section class="booking-section" style="padding-top: 0; min-height: 50vh;">
+    <div class="login-container fade-up" style="transition-delay: 0.2s">
+      <p>Masukkan Kode Akses yang telah kami berikan melalui email/WhatsApp untuk melihat dan mengunduh foto Anda.</p>
+      <form id="loginForm">
+        <div class="form-group">
+          <input type="text" id="accessCode" class="form-control" placeholder="Contoh: BER.KESAAN-1234" required style="text-align: center; font-weight: 600; font-size: 1.1rem; letter-spacing: 2px;">
+        </div>
+        <button type="submit" class="btn" style="width: 100%;">Akses Galeri</button>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-content">
+      <h3>BER.KESAAN.</h3>
+      <p>Premium Prewedding Photography Studio</p>
+    </div>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script type="module" src="./firebase-config.js"></script>
+  <script type="module" src="./main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const loginForm = document.getElementById('loginForm');
+      if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const code = document.getElementById('accessCode').value;
+          const btn = loginForm.querySelector('button');
+          
+          btn.textContent = 'Memeriksa...';
+          btn.disabled = true;
+
+          // Validasi kode dengan data dari Admin
+          setTimeout(() => {
+            const validCodes = JSON.parse(localStorage.getItem('validAccessCodes') || '{}');
+            let foundPhone = null;
+            
+            for (const [phone, validCode] of Object.entries(validCodes)) {
+              if (validCode === code.trim()) {
+                foundPhone = phone;
+                break;
+              }
+            }
+            
+            if(foundPhone) {
+              localStorage.setItem('currentClientPhone', foundPhone);
+              window.location.href = '/client-gallery.html';
+            } else {
+              alert('Kode akses tidak valid atau belum digenerate oleh admin. Silakan coba lagi.');
+              btn.textContent = 'Akses Galeri';
+              btn.disabled = false;
+            }
+          }, 1000);
+        });
+      }
+    });
+  </script>
+</body>
+</html>

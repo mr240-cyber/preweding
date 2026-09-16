@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Galeri Klien - ber.kesaan</title>
+  <link rel="stylesheet" href="./style.css">
+  <style>
+    .client-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 3rem;
+      padding: 0 5%;
+    }
+    .client-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+    }
+    .client-meta {
+      color: var(--text-light);
+    }
+    
+    .gallery-item .gallery-overlay {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .dl-btn {
+      padding: 8px 16px;
+      background: white;
+      color: var(--text-dark);
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    .gallery-item:hover .dl-btn {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .dl-btn:hover {
+      background: var(--primary-color);
+      color: white;
+    }
+    .dl-all {
+      text-align: center;
+      margin-top: 4rem;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="logo">BER.KESAAN.</a>
+    <ul class="nav-links">
+      <li><a href="/">Keluar dari Galeri</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-header" style="padding-bottom: 2rem;">
+    <h1 class="fade-up">Galeri Pribadi Anda</h1>
+    <p class="fade-up" style="transition-delay: 0.2s; color: var(--text-light);">Terima kasih telah mempercayakan momen spesial Anda kepada kami.</p>
+  </div>
+
+  <div class="client-header fade-up" style="transition-delay: 0.3s">
+    <div>
+      <h2 class="client-title" id="clientNameDisplay">Memuat...</h2>
+      <p class="client-meta" id="clientMetaDisplay">-</p>
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <button class="btn btn-outline" id="btnDownloadSelected" onclick="downloadSelected()" disabled>Unduh Terpilih (0)</button>
+      <button class="btn btn-outline" onclick="downloadAll()">Unduh Semua Hasil Edit</button>
+    </div>
+  </div>
+
+  <!-- Foto Mentah Section -->
+  <section style="padding-top: 0; margin-bottom: 3rem;">
+    <div style="padding: 0 5%; margin-bottom: 2rem;">
+      <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 0.5rem;">Foto Mentah (Belum Edit)</h3>
+      <p style="color: var(--text-light); font-size: 0.9rem;">Pilih foto yang ingin diedit oleh fotografer, lalu berikan catatan/nama khusus (opsional). Setelah selesai, klik tombol "Kirim Pilihan" di bawah.</p>
+    </div>
+    <div class="gallery-grid" id="clientGalleryGrid">
+      <!-- Dynamic raw photos injected here -->
+    </div>
+    
+    <div style="padding: 0 5%; text-align: center; margin-top: 2rem;" id="submitSelectionContainer" class="d-none">
+      <button class="btn" style="padding: 1rem 3rem; font-size: 1.1rem;" onclick="submitClientSelections()">Kirim Pilihan ke Fotografer</button>
+    </div>
+  </section>
+
+  <!-- Foto Hasil Edit Section -->
+  <section style="padding-top: 0; margin-bottom: 4rem;">
+    <div style="padding: 0 5%; margin-bottom: 2rem; border-top: 1px solid #eee; padding-top: 3rem;">
+      <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--primary-color);">Foto Hasil Edit Final</h3>
+      <p style="color: var(--text-light); font-size: 0.9rem;">Ini adalah hasil akhir yang sudah diedit. Anda dapat mengunduh foto-foto ini.</p>
+    </div>
+    <div class="gallery-grid" id="clientEditedGrid">
+      <!-- Dynamic edited photos injected here -->
+    </div>
+  </section>
+
+
+
+  <footer>
+    <div class="footer-content">
+      <h3>BER.KESAAN.</h3>
+      <p>Premium Prewedding Photography Studio</p>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 ber.kesaan Photography. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script type="module" src="./firebase-config.js"></script>
+  <script type="module" src="./main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const currentPhone = localStorage.getItem('currentClientPhone');
+      if (!currentPhone) {
+        alert('Anda belum login. Mengalihkan...');
+        window.location.href = '/client-login.html';
+        return;
+      }
+
+      // Load client details
+      const allBookings = JSON.parse(localStorage.getItem('allBookings') || '[]');
+      const booking = allBookings.find(b => b.phone === currentPhone);
+      
+      const rawPhotosMap = JSON.parse(localStorage.getItem('clientRawPhotos') || '{}');
+      const editedPhotosMap = JSON.parse(localStorage.getItem('clientEditedPhotos') || '{}');
+      
+      const rawPhotos = rawPhotosMap[currentPhone] || [];
+      const editedPhotos = editedPhotosMap[currentPhone] || [];
+
+      if (booking) {
+        document.getElementById('clientNameDisplay').textContent = booking.name;
+        document.getElementById('clientMetaDisplay').textContent = `Sesi Prewedding - ${booking.location || 'Studio'} | ${rawPhotos.length} Mentah, ${editedPhotos.length} Hasil Edit`;
+      }
+
+      // Render Raw Photos
+      const grid = document.getElementById('clientGalleryGrid');
+      grid.innerHTML = '';
+      
+      if (rawPhotos.length === 0) {
+        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-light); padding: 50px;">Belum ada foto mentah yang diupload oleh fotografer.</p>';
+      } else {
+        document.getElementById('submitSelectionContainer').classList.remove('d-none');
+        rawPhotos.forEach((item, i) => {
+          const url = typeof item === 'string' ? item : item.url;
+          const fileName = typeof item === 'string' ? `Mentah_${1000 + i}` : item.name;
+          const div = document.createElement('div');
+          div.className = 'fade-up';
+          div.style.transitionDelay = `${(i % 3) * 0.1}s`;
+          div.innerHTML = `
+            <div class="gallery-item" style="border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+              <img src="${url}" alt="Foto ${i+1}">
+              <div class="gallery-overlay">
+                <span style="font-size: 1rem; word-break: break-all; padding: 0 10px; text-align: center;">${fileName}</span>
+              </div>
+            </div>
+            <div style="padding: 15px; background: white; border: 1px solid #eee; border-top: none; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
+              <label style="display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 500; cursor: pointer; color: var(--text-dark);">
+                <input type="checkbox" class="photo-checkbox" data-url="${url}" data-name="${fileName}" onchange="updateSelectionCount()">
+                Pilih untuk Edit
+              </label>
+            </div>
+          `;
+          grid.appendChild(div);
+          
+          setTimeout(() => div.classList.add('visible'), 50);
+        });
+      }
+
+      // Render Edited Photos
+      const editedGrid = document.getElementById('clientEditedGrid');
+      editedGrid.innerHTML = '';
+      
+      if (editedPhotos.length === 0) {
+        editedGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-light); padding: 50px;">Belum ada foto hasil edit dari fotografer.</p>';
+      } else {
+        editedPhotos.forEach((item, i) => {
+          const url = typeof item === 'string' ? item : item.url;
+          const fileName = typeof item === 'string' ? `Final_${1000 + i}` : item.name;
+          const div = document.createElement('div');
+          div.className = 'gallery-item fade-up visible';
+          div.style.transitionDelay = `${(i % 3) * 0.1}s`;
+          div.innerHTML = `
+            <img src="${url}" alt="Foto Edit ${i+1}">
+            <label style="position: absolute; top: 10px; left: 10px; z-index: 5; background: rgba(0,0,0,0.6); padding: 5px 10px; border-radius: 4px; color: white; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: 'Inter', sans-serif; font-size: 0.8rem;">
+              <input type="checkbox" class="edit-photo-checkbox" value="${url}" onchange="updateDownloadSelectedCount()">
+              Pilih Download
+            </label>
+            <div class="gallery-overlay" style="flex-direction: column; gap: 10px;">
+              <span style="font-size: 1rem; word-break: break-all; padding: 0 10px; text-align: center;">${fileName}</span>
+              <a href="${url}" download="${fileName}" class="dl-btn">Unduh High-Res</a>
+            </div>
+          `;
+          editedGrid.appendChild(div);
+        });
+      }
+    });
+
+    // Submit Client Selections Logic
+    window.submitClientSelections = async () => {
+      const checkboxes = document.querySelectorAll('.photo-checkbox:checked');
+      if (checkboxes.length === 0) {
+        alert('Anda belum memilih foto mentah mana pun untuk diedit.');
+        return;
+      }
+
+      const currentPhone = localStorage.getItem('currentClientPhone');
+      const selectionsMap = JSON.parse(localStorage.getItem('clientSelectedPhotos') || '{}');
+      
+      let clientSelections = [];
+      
+      checkboxes.forEach(cb => {
+        const name = cb.getAttribute('data-name');
+        
+        clientSelections.push({
+          name: name
+        });
+      });
+
+      selectionsMap[currentPhone] = clientSelections;
+      localStorage.setItem('clientSelectedPhotos', JSON.stringify(selectionsMap));
+      
+      // Save to Firestore using the allBookings document, which we KNOW is publicly writable!
+      try {
+        if(window.db) {
+          const docRef = await window.db.collection('settings').doc('allBookings').get();
+          if (docRef.exists) {
+            let bookings = JSON.parse(docRef.data().data);
+            const bIndex = bookings.findIndex(b => b.phone === currentPhone);
+            if (bIndex !== -1) {
+              bookings[bIndex].selections = clientSelections;
+              await window.db.collection('settings').doc('allBookings').set({ data: JSON.stringify(bookings) });
+            } else {
+              throw new Error("Data booking tidak ditemukan.");
+            }
+          }
+        }
+        alert(`Berhasil mengirim ${clientSelections.length} pilihan foto ke Fotografer!`);
+      } catch (err) {
+        console.error("Gagal mengirim ke DB:", err);
+        alert('Gagal mengirim. Error asli: ' + err.message);
+      }
+    };
+
+    // Bulk Download Logic (Edited Photos)
+    window.updateDownloadSelectedCount = () => {
+      const checkboxes = document.querySelectorAll('.edit-photo-checkbox:checked');
+      const btn = document.getElementById('btnDownloadSelected');
+      btn.textContent = `Unduh Terpilih (${checkboxes.length})`;
+      btn.disabled = checkboxes.length === 0;
+      
+      if(checkboxes.length > 0) {
+        btn.style.background = 'var(--primary-color)';
+        btn.style.color = 'white';
+      } else {
+        btn.style.background = 'transparent';
+        btn.style.color = 'var(--text-dark)';
+      }
+    };
+
+    window.downloadSelected = () => {
+      const checkboxes = document.querySelectorAll('.edit-photo-checkbox:checked');
+      if(checkboxes.length === 0) return;
+      
+      alert(`Memulai pengunduhan ${checkboxes.length} foto terpilih. Harap izinkan browser jika muncul pop-up peringatan unduhan ganda.`);
+      
+      checkboxes.forEach((cb, index) => {
+        setTimeout(() => {
+          triggerDownload(cb.value, `Selected_IMG_${index+1}.png`);
+        }, index * 500); // 500ms delay to prevent browser blocking
+      });
+    };
+
+    window.downloadAll = () => {
+      const currentPhone = localStorage.getItem('currentClientPhone');
+      const editedPhotosMap = JSON.parse(localStorage.getItem('clientEditedPhotos') || '{}');
+      const photos = editedPhotosMap[currentPhone] || [];
+      
+      if(photos.length === 0) return alert('Tidak ada foto untuk diunduh.');
+      
+      alert(`Memulai pengunduhan SEMUA foto (${photos.length} item). Harap izinkan browser jika muncul pop-up peringatan.`);
+      
+      photos.forEach((url, index) => {
+        setTimeout(() => {
+          triggerDownload(url, `All_IMG_${index+1}.png`);
+        }, index * 500);
+      });
+    };
+
+    function triggerDownload(url, filename) {
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  </script>
+</body>
+</html>

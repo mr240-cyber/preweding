@@ -146,7 +146,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
           }
         }
-        }
       });
     }
   }

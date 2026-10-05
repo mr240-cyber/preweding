@@ -82,8 +82,17 @@
           <input type="text" id="location" class="form-control" placeholder="Contoh: Pantai, Pegunungan, atau Studio">
         </div>
 
+        <div class="form-group fade-up" style="transition-delay: 0.35s">
+          <label for="category">Kategori Layanan</label>
+          <select id="category" name="category" class="form-control" required>
+            <option value="">Pilih Kategori...</option>
+            <option value="BER.KESAAN (PREWEDDING)">BER.KESAAN (PREWEDDING)</option>
+            <option value="KESAN.WISUDA (GRADUATION)">KESAN.WISUDA (GRADUATION)</option>
+          </select>
+        </div>
+
         <div class="form-group fade-up" style="transition-delay: 0.4s">
-          <label for="package">Paket Prewedding</label>
+          <label for="package">Pilihan Paket</label>
           <select id="package" name="package" class="form-control" required>
             <option value="">Pilih Paket...</option>
             <!-- Dynamic packages injected here -->

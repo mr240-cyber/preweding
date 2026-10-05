@@ -165,6 +165,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         phone: document.getElementById('phone').value,
         date: document.getElementById('date').value,
         location: document.getElementById('location').value,
+        category: document.getElementById('category').value,
         packageId: document.getElementById('package').value,
         message: document.getElementById('message').value,
         bookingDate: new Date().toLocaleDateString('id-ID')
